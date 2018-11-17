@@ -1,0 +1,30 @@
+.mt-15 {
+  margin-top: 15px;
+}
+.wrapper {
+  background: #282c34;
+  min-height: 100vh;
+}
+.site-title{
+  color: #fff;
+}
+.job-list {
+  background: #fff;
+}
+.sort-selected:after {
+  content: '\f00c';
+  font-family: 'FontAwesome';
+  font-weight: normal;
+  font-style: normal;
+  margin-left: 10px;
+  display: inline-block; 
+}
+.dropdown-menu>li>p {
+  display: block;
+  padding: 0px 20px;
+  clear: both;
+  font-weight: 400;
+  line-height: 1.42857143;
+  color: #333;
+  white-space: nowrap;
+}
