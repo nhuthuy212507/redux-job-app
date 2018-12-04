@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import { findIndex, filter, orderBy } from 'lodash';
+import { connect } from 'react-redux';
+import { findIndex } from 'lodash';
+
+import * as actions from './actions/index';
 import './App.css';
 import TaskForm from './components/TaskForm';
 import TaskControl from './components/TaskControl';
@@ -10,8 +13,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tasks: [],
-      isDisplayForm: false,
       taskEditing: '',
       search: {
         name: '',
@@ -25,59 +26,8 @@ class App extends Component {
     };
   }
 
-  componentWillMount() {
-    localStorage && localStorage.getItem('tasks') && this.setState({
-      tasks: JSON.parse(localStorage.getItem('tasks'))
-    });
-  }
-
   onToggleForm = () => {
-    if (this.state.isDisplayForm && this.state.taskEditing !== '') {
-      this.setState({
-        isDisplayForm: true,
-        taskEditing: ''
-      });
-    } else {
-      this.setState({
-        isDisplayForm: !this.state.isDisplayForm
-      });
-    }
-  }
-
-  onSubmit = (data) => {
-    var { tasks } = this.state;
-    if (data.id === '') {
-      var task = {
-        id: this.guidGenerator(),
-        name: data.name,
-        status: data.status === 'true' ? true : false
-      };
-      tasks.push(task);
-    } else {
-      var index = this.findIndex(data.id);
-      data.status = data.status === 'true' ? true : false;
-      tasks[index] = data;
-    }
-    
-    this.setState({
-      tasks: tasks,
-      taskEditing: null
-    });
-    localStorage.setItem('tasks', JSON.stringify(tasks));
-  }
-
-  onUpdateStatus = (id) => {
-    var {tasks} = this.state;
-    var index = findIndex(tasks, (task) => {
-      return task.id === id;
-    });
-    if (index !== -1) {
-      tasks[index].status = !tasks[index].status;
-      this.setState({
-        tasks: tasks
-      });
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
+    this.props.onToggleForm();
   }
 
   onDelete = (id) => {
@@ -89,7 +39,7 @@ class App extends Component {
         tasks: tasks
       });
       localStorage.setItem('tasks', JSON.stringify(tasks));
-      this.onCloseForm();
+      this.props.onCloseForm();
     }
   }
 
@@ -98,8 +48,7 @@ class App extends Component {
     var index = this.findIndex(id);
     var taskEditing = tasks[index];
     this.setState({
-      taskEditing: taskEditing,
-      isDisplayForm: true
+      taskEditing: taskEditing
     });
   }
 
@@ -140,69 +89,59 @@ class App extends Component {
   }
 
   onCloseForm = () => {
-    this.setState({
-      isDisplayForm: false,
-      taskEditing: ''
-    });
-  }
-  
-  guidGenerator = () => {
-      var S4 = function() {
-        return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
-      };
-      return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
+    this.props.onCloseForm();
   }
   
   render() {
-    var { tasks, isDisplayForm, taskEditing, search, keyword, sort } = this.state;
+    var { taskEditing } = this.state;
+    var { isDisplayForm } = this.props;
 
     //search table
-    if (search) {
-      if (search.name) {
-        tasks = tasks.filter(task => {
-          return task.name.toLowerCase().indexOf(search.name) !== -1;
-        });
-      }
-      tasks = tasks.filter(task => {
-        if (search.status === -1) {
-          return task;
-        } else {
-          return task.status === (search.status === 1 ? true : false);
-        }
-      });
-    }
+    // if (search) {
+    //   if (search.name) {
+    //     tasks = tasks.filter(task => {
+    //       return task.name.toLowerCase().indexOf(search.name) !== -1;
+    //     });
+    //   }
+    //   tasks = tasks.filter(task => {
+    //     if (search.status === -1) {
+    //       return task;
+    //     } else {
+    //       return task.status === (search.status === 1 ? true : false);
+    //     }
+    //   });
+    // }
 
     //search global
-    if (keyword) {
-      // tasks = tasks.filter(task => {
-      //   return task.name.toLowerCase().indexOf(keyword) !== -1;
-      // });
-      tasks = filter(tasks, (task) => {
-        return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
-      });
-    }
+    // if (keyword) {
+    //   // tasks = tasks.filter(task => {
+    //   //   return task.name.toLowerCase().indexOf(keyword) !== -1;
+    //   // });
+    //   tasks = filter(tasks, (task) => {
+    //     return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
+    //   });
+    // }
 
     //sort
-    if (sort.by === 'name') {
-      // tasks.sort((a, b) => {
-      //   if (a.name > b.name) return sort.value;
-      //   else if (a.name < b.name) return -sort.value;
-      //   else return 0;
-      // });
-      tasks = orderBy(tasks, ['name'], [sort.value === 1 ? 'asc' : 'desc']);
-    } else {
-      // tasks.sort((a, b) => {
-      //   if (a.status > b.status) return -sort.value;
-      //   else if (a.status < b.status) return sort.value;
-      //   else return 0;
-      // });
-      tasks = orderBy(tasks, ['status'], [sort.value === -1 ? 'asc' : 'desc']);
-    }
+    // if (sort.by === 'name') {
+    //   // tasks.sort((a, b) => {
+    //   //   if (a.name > b.name) return sort.value;
+    //   //   else if (a.name < b.name) return -sort.value;
+    //   //   else return 0;
+    //   // });
+    //   tasks = orderBy(tasks, ['name'], [sort.value === 1 ? 'asc' : 'desc']);
+    // } else {
+    //   // tasks.sort((a, b) => {
+    //   //   if (a.status > b.status) return -sort.value;
+    //   //   else if (a.status < b.status) return sort.value;
+    //   //   else return 0;
+    //   // });
+    //   tasks = orderBy(tasks, ['status'], [sort.value === -1 ? 'asc' : 'desc']);
+    // }
 
     const elmForm = isDisplayForm ? 
       <TaskForm 
         onCloseForm={this.onCloseForm} 
-        onSubmit={this.onSubmit}
         taskEditing={taskEditing}
       /> : '';
     return (
@@ -232,8 +171,6 @@ class App extends Component {
               <div className="row mt-15">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                   <TaskList 
-                    tasks={tasks}
-                    onUpdateStatus={this.onUpdateStatus}
                     onDelete={this.onDelete}
                     onUpdate={this.onUpdate}
                     onFilter={this.onFilter}
@@ -248,4 +185,18 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    isDisplayForm: state.form
+  }
+};
+
+const mapDispatchToProps = (dispatch, props) => {
+  return {
+    onToggleForm: () => {
+      return dispatch(actions.toggleForm());
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
