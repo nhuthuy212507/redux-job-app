@@ -12,6 +12,8 @@ var guidGenerator = () => {
 }
 
 var myReducer = (state = initialState, action) => {
+  var id = '';
+  var index = -1;
   switch (action.type) {
     case types.LIST_ALL:
       return state;
@@ -25,8 +27,8 @@ var myReducer = (state = initialState, action) => {
       localStorage.setItem('tasks', JSON.stringify(state));
       return [...state];
     case types.UPDATE_STATUS:
-      var id = action.id;
-      var index = findIndex(state, (task) => {
+      id = action.id;
+      index = findIndex(state, (task) => {
         return task.id === id;
       });
       if (index !== -1) {
@@ -34,6 +36,16 @@ var myReducer = (state = initialState, action) => {
           ...state[index],
           status: !state[index].status
         };
+        localStorage.setItem('tasks', JSON.stringify(state));
+      }
+      return [...state];
+    case types.DELETE_TASK:
+      id = action.id;
+      index = findIndex(state, (task) => {
+        return task.id === id;
+      });
+      if(index !== -1) {
+        state.splice(index, 1);
         localStorage.setItem('tasks', JSON.stringify(state));
       }
       return [...state];

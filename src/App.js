@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { findIndex } from 'lodash';
 
 import * as actions from './actions/index';
 import './App.css';
@@ -28,19 +27,6 @@ class App extends Component {
 
   onToggleForm = () => {
     this.props.onToggleForm();
-  }
-
-  onDelete = (id) => {
-    var {tasks} = this.state;
-    var index = this.findIndex(id);
-    if (index !== -1) {
-      tasks.splice(index, 1);
-      this.setState({
-        tasks: tasks
-      });
-      localStorage.setItem('tasks', JSON.stringify(tasks));
-      this.props.onCloseForm();
-    }
   }
 
   onUpdate = (id) => {
@@ -171,7 +157,6 @@ class App extends Component {
               <div className="row mt-15">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                   <TaskList 
-                    onDelete={this.onDelete}
                     onUpdate={this.onUpdate}
                     onFilter={this.onFilter}
                   />
