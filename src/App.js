@@ -12,7 +12,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      taskEditing: '',
       search: {
         name: '',
         status: -1
@@ -26,15 +25,16 @@ class App extends Component {
   }
 
   onToggleForm = () => {
-    this.props.onToggleForm();
-  }
-
-  onUpdate = (id) => {
-    var {tasks} = this.state;
-    var index = this.findIndex(id);
-    var taskEditing = tasks[index];
-    this.setState({
-      taskEditing: taskEditing
+    var { taskEditing } = this.props;
+    if (taskEditing && taskEditing.id !== '') {
+      this.props.onOpenForm();
+    } else {
+      this.props.onToggleForm();
+    }
+    this.props.onClearForm({
+      id : '',
+      name: '',
+      status: false
     });
   }
 
@@ -62,24 +62,8 @@ class App extends Component {
       }
     });
   }
-
-  findIndex = (id) => {
-    var result = -1;
-    var {tasks} = this.state;
-    tasks.forEach((task, index) => {
-      if (task.id === id) {
-        return result = index;
-      }
-    });
-    return result;
-  }
-
-  onCloseForm = () => {
-    this.props.onCloseForm();
-  }
   
   render() {
-    var { taskEditing } = this.state;
     var { isDisplayForm } = this.props;
 
     //search table
@@ -125,18 +109,13 @@ class App extends Component {
     //   tasks = orderBy(tasks, ['status'], [sort.value === -1 ? 'asc' : 'desc']);
     // }
 
-    const elmForm = isDisplayForm ? 
-      <TaskForm 
-        onCloseForm={this.onCloseForm} 
-        taskEditing={taskEditing}
-      /> : '';
     return (
       <div className="wrapper">
         <div className="container">
           <h1 className="text-center site-title">Job Management</h1>
           <div className="row">
             <div className={ isDisplayForm ? 'col-xs-4 col-sm-4 col-md-4 col-lg-4' : '' }>
-              { elmForm }
+              <TaskForm />
             </div>
             <div className={ isDisplayForm ? 'col-xs-8 col-sm-8 col-md-8 col-lg-8' : 'col-xs-12 col-sm-12 col-md-12 col-lg-12' }>
               <div className="row">
@@ -157,7 +136,6 @@ class App extends Component {
               <div className="row mt-15">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                   <TaskList 
-                    onUpdate={this.onUpdate}
                     onFilter={this.onFilter}
                   />
                 </div>
@@ -172,7 +150,8 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    isDisplayForm: state.form
+    isDisplayForm: state.isDisplayForm,
+    taskEditing: state.taskEditing
   }
 };
 
@@ -180,6 +159,12 @@ const mapDispatchToProps = (dispatch, props) => {
   return {
     onToggleForm: () => {
       return dispatch(actions.toggleForm());
+    },
+    onClearForm: (task) => {
+      return dispatch(actions.editTask(task));
+    },
+    onOpenForm: () => {
+      return dispatch(actions.openForm());
     }
   }
 }

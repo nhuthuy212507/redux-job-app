@@ -6,11 +6,7 @@ class TaskForm extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {
-      id: '',
-      name: '',
-      status: false
-    }
+    this.state = {}
   }
 
   
@@ -21,6 +17,8 @@ class TaskForm extends Component {
         name: this.props.taskEditing.name,
         status: this.props.taskEditing.status
       });
+    } else {
+      this.onClear();
     }
   }
 
@@ -31,12 +29,8 @@ class TaskForm extends Component {
         name: nextProps.taskEditing.name,
         status: nextProps.taskEditing.status
       });
-    } else if (!nextProps.taskEditing) {
-      this.setState({
-        id: '',
-        name: '',
-        status: false
-      });
+    } else {
+      this.onClear();
     }
   }
 
@@ -55,7 +49,7 @@ class TaskForm extends Component {
 
   onSubmit = (e) => {
     e.preventDefault();
-    this.props.onAddTask(this.state);
+    this.props.onSaveTask(this.state);
     this.onClear();
     this.props.onCloseForm();
   }
@@ -68,12 +62,13 @@ class TaskForm extends Component {
   }
 
   render() {
-    var {id} = this.state;
+    var { taskEditing } = this.props;
+    if (!this.props.isDisplayForm) return '';
     return (
       <div className="panel panel-success">
           <div className="panel-heading">
             <h3 className="panel-title">
-              {id !== '' ? 'Update Job' : 'Add New Job'}
+              {taskEditing.id !== '' ? 'Update Job' : 'Add New Job'}
               <i 
                 className="fa fa-times-circle pull-right" 
                 aria-hidden="true"
@@ -108,7 +103,7 @@ class TaskForm extends Component {
               <div className="form-group text-center">
                 <button type="submit" className="btn btn-success"><i className="fa fa-plus" aria-hidden="true"></i> Save</button>&nbsp;
                 <button 
-                  type="reset" 
+                  type="button" 
                   className="btn btn-danger"
                   onClick={this.onClear}
                 ><i className="fa fa-times" aria-hidden="true"></i> Cancel</button>
@@ -122,14 +117,15 @@ class TaskForm extends Component {
 
 const mapStateToProps = state => {
   return {
-
+    isDisplayForm: state.isDisplayForm,
+    taskEditing: state.taskEditing
   }
 };
 
 const mapDispatchToProps = (dispatch, props) => {
   return {
-    onAddTask: (task) => {
-      dispatch(actions.addTask(task));
+    onSaveTask: (task) => {
+      dispatch(actions.saveTask(task));
     },
     onCloseForm: () => {
       return dispatch(actions.closeForm());
