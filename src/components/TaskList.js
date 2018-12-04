@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import TaskItem from './TaskItem';
 import * as actions from '../actions/index';
+import { orderBy } from 'lodash';
 
 class TaskList extends Component {
 
@@ -28,7 +29,7 @@ class TaskList extends Component {
   }
 
   render() {
-    var { tasks, filterTable, keyword } = this.props;
+    var { tasks, filterTable, keyword, sort } = this.props;
 
     if (filterTable.name) {
       tasks = tasks.filter(task => {
@@ -46,6 +47,14 @@ class TaskList extends Component {
       tasks = tasks.filter(task => {
         return task.name.toLowerCase().indexOf(keyword) !== -1;
       });
+    }
+
+    if (sort) {
+      if (sort.by === 'name') {
+        tasks = orderBy(tasks, ['name'], [sort.value === 1 ? 'asc' : 'desc']);
+      } else {
+        tasks = orderBy(tasks, ['status'], [sort.value === -1 ? 'asc' : 'desc']);
+      }
     }
 
     const elmTask = tasks.map((task, index) => (
@@ -100,7 +109,8 @@ const mapStateToProps = (state) => {
   return {
     tasks: state.tasks,
     filterTable: state.filterTable,
-    keyword: state.search
+    keyword: state.search,
+    sort: state.sort
   };
 }
 

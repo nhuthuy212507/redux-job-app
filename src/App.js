@@ -9,16 +9,6 @@ import TaskList from './components/TaskList';
 
 class App extends Component {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      sort: {
-        by: 'name',
-        value: 1
-      }
-    };
-  }
-
   onToggleForm = () => {
     var { taskEditing } = this.props;
     if (taskEditing && taskEditing.id !== '') {
@@ -32,35 +22,9 @@ class App extends Component {
       status: false
     });
   }
-
-  onSort = (sort) => {
-    this.setState({
-      sort: {
-        by: sort.by,
-        value: sort.value
-      }
-    });
-  }
   
   render() {
     var { isDisplayForm } = this.props;
-
-    //sort
-    // if (sort.by === 'name') {
-    //   // tasks.sort((a, b) => {
-    //   //   if (a.name > b.name) return sort.value;
-    //   //   else if (a.name < b.name) return -sort.value;
-    //   //   else return 0;
-    //   // });
-    //   tasks = orderBy(tasks, ['name'], [sort.value === 1 ? 'asc' : 'desc']);
-    // } else {
-    //   // tasks.sort((a, b) => {
-    //   //   if (a.status > b.status) return -sort.value;
-    //   //   else if (a.status < b.status) return sort.value;
-    //   //   else return 0;
-    //   // });
-    //   tasks = orderBy(tasks, ['status'], [sort.value === -1 ? 'asc' : 'desc']);
-    // }
 
     return (
       <div className="wrapper">
@@ -82,9 +46,7 @@ class App extends Component {
                   </button>
                 </div>
               </div>
-              <TaskControl 
-                onSort={this.onSort}
-              />
+              <TaskControl />
               <div className="row mt-15">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                   <TaskList />
