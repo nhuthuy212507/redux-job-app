@@ -8,3 +8,4 @@ export const DELETE_TASK = 'DELETE_TASK';
 export const UPDATE_TASK = 'UPDATE_TASK';
 export const EDIT_TASK = 'EDIT_TASK';
 export const FILTER_TABLE = 'FILTER_TABLE';
+export const SEARCH_GLOBAL = 'SEARCH_GLOBAL';

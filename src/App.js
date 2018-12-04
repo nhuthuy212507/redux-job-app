@@ -12,7 +12,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      keyword: '',
       sort: {
         by: 'name',
         value: 1
@@ -34,12 +33,6 @@ class App extends Component {
     });
   }
 
-  onSearch = (keyword) => {
-    this.setState({
-      keyword: keyword
-    });
-  }
-
   onSort = (sort) => {
     this.setState({
       sort: {
@@ -51,16 +44,6 @@ class App extends Component {
   
   render() {
     var { isDisplayForm } = this.props;
-
-    //search global
-    // if (keyword) {
-    //   // tasks = tasks.filter(task => {
-    //   //   return task.name.toLowerCase().indexOf(keyword) !== -1;
-    //   // });
-    //   tasks = filter(tasks, (task) => {
-    //     return task.name.toLowerCase().indexOf(keyword.toLowerCase()) !== -1;
-    //   });
-    // }
 
     //sort
     // if (sort.by === 'name') {
@@ -100,7 +83,6 @@ class App extends Component {
                 </div>
               </div>
               <TaskControl 
-                onSearch={this.onSearch}
                 onSort={this.onSort}
               />
               <div className="row mt-15">

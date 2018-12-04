@@ -28,7 +28,7 @@ class TaskList extends Component {
   }
 
   render() {
-    var { tasks, filterTable } = this.props;
+    var { tasks, filterTable, keyword } = this.props;
 
     if (filterTable.name) {
       tasks = tasks.filter(task => {
@@ -39,6 +39,12 @@ class TaskList extends Component {
     if (filterTable.status !== -1) {
       tasks = tasks.filter(task => {
         return task.status === (filterTable.status === 1 ? true : false);
+      });
+    }
+
+    if (keyword) {
+      tasks = tasks.filter(task => {
+        return task.name.toLowerCase().indexOf(keyword) !== -1;
       });
     }
 
@@ -93,7 +99,8 @@ class TaskList extends Component {
 const mapStateToProps = (state) => {
   return {
     tasks: state.tasks,
-    filterTable: state.filterTable
+    filterTable: state.filterTable,
+    keyword: state.search
   };
 }
 
