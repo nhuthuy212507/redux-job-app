@@ -12,10 +12,6 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      search: {
-        name: '',
-        status: -1
-      },
       keyword: '',
       sort: {
         by: 'name',
@@ -38,16 +34,6 @@ class App extends Component {
     });
   }
 
-  onFilter = (filterName, filterStatus) => {
-    filterStatus = parseInt(filterStatus, 10);
-    this.setState({
-      search: {
-        name: filterName.toLowerCase(),
-        status: filterStatus
-      }
-    });
-  }
-
   onSearch = (keyword) => {
     this.setState({
       keyword: keyword
@@ -65,22 +51,6 @@ class App extends Component {
   
   render() {
     var { isDisplayForm } = this.props;
-
-    //search table
-    // if (search) {
-    //   if (search.name) {
-    //     tasks = tasks.filter(task => {
-    //       return task.name.toLowerCase().indexOf(search.name) !== -1;
-    //     });
-    //   }
-    //   tasks = tasks.filter(task => {
-    //     if (search.status === -1) {
-    //       return task;
-    //     } else {
-    //       return task.status === (search.status === 1 ? true : false);
-    //     }
-    //   });
-    // }
 
     //search global
     // if (keyword) {
@@ -135,9 +105,7 @@ class App extends Component {
               />
               <div className="row mt-15">
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                  <TaskList 
-                    onFilter={this.onFilter}
-                  />
+                  <TaskList />
                 </div>
               </div>
             </div>

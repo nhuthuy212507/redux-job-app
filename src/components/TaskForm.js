@@ -8,7 +8,6 @@ class TaskForm extends Component {
     super(props);
     this.state = {}
   }
-
   
   componentWillMount() {
     if (this.props.taskEditing) {
